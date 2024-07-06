@@ -1,55 +1,24 @@
 #!/usr/bin/python3
-"""lock boxes puzzle """
-
-
-def look_next_opened_box(opened_boxes):
-    return None
+"""
+Method to determine if all boxes can be opened
+Using prototype: def canUnlockAll(boxes)
+"""
 
 
 def canUnlockAll(boxes):
-    """Check if all boxes can be opened
-    Args:
-        boxes (list): List which contain all the boxes with the keys
-    Returns:
-        bool: True if all boxes can be opened, otherwise, False
     """
-    if len(boxes) <= 1 or boxes == [[]]:
-        return True
+    Check if boxes can be unlocked
+    """
+    unlocked = set()
 
-    aux = {}
-    while True:
-        if len(aux) == 0:
-            aux[0] = {
-                'status': 'opened',
-                'keys': boxes[0],
-            }
-        keys = look_next_opened_box(aux)
-        if keys:
-            for key in keys:
-                try:
-                    if aux.get(key) and aux.get(key).get('status') \
-                       == 'opened/checked':
-                        continue
-                    aux[key] = {
-                        'status': 'opened',
-                        'keys': boxes[key]
-                    }
-                except (KeyError, IndexError):
-                    continue
-        elif 'opened' in [box.get('status') for box in aux.values()]:
-            continue
-        elif len(aux) == len(boxes):
-            break
-        else:
-            return False
+    def dfs(box):
+        '''recursive dfs function'''
+        if box in unlocked:
+            return
+        unlocked.add(box)
+        for key in boxes[box]:
+            if key not in unlocked and key < len(boxes):
+                dfs(key)
 
-    return len(aux) == len(boxes)
-
-
-def main():
-    """Entry point"""
-    canUnlockAll([[]])
-
-
-if __name__ == '__main__':
-    main()
+    dfs(0)
+    return len(unlocked) == len(boxes)
